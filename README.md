@@ -94,39 +94,39 @@ export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search 
 
 ### Dockerfile: 
 
-Python 3.9 슬림 이미지를 기반으로 합니다.
+  * Python 3.9 슬림 이미지를 기반으로 합니다.
 
-requirements.txt에 명시된 라이브러리들을 설치합니다.
+  * requirements.txt에 명시된 라이브러리들을 설치합니다.
 
-애플리케이션 코드(현재 디렉토리의 모든 파일)를 이미지 안의 /app 디렉토리로 복사합니다.
+  * 애플리케이션 코드(현재 디렉토리의 모든 파일)를 이미지 안의 /app 디렉토리로 복사합니다.
 
-gunicorn WSGI 서버를 사용하여 app.py의 Flask 앱을 실행합니다. (Cloud Run 환경에 적합)
+  * gunicorn WSGI 서버를 사용하여 app.py의 Flask 앱을 실행합니다. (Cloud Run 환경에 적합)
 
 ### requirements.txt: 
 
-애플리케이션 실행에 필요한 Python 라이브러리 목록입니다 (Flask, google-api-python-client, google-auth, gunicorn, Flask-Cors).
+  * 애플리케이션 실행에 필요한 Python 라이브러리 목록입니다 (Flask, google-api-python-client, google-auth, gunicorn, Flask-Cors).
 
 ### templates/index.html: 
 
-검색어 입력 필드, 검색 버튼, 결과 표시 영역을 포함하는 간단한 HTML 구조입니다.
+  * 검색어 입력 필드, 검색 버튼, 결과 표시 영역을 포함하는 간단한 HTML 구조입니다.
 
-기본적인 CSS 스타일링이 포함되어 있습니다.
+  * 기본적인 CSS 스타일링이 포함되어 있습니다.
 
-JavaScript 코드가 포함되어 있습니다:
+  * JavaScript 코드가 포함되어 있습니다:
 
-검색 버튼 클릭 또는 Enter 키 입력 시 performSearch 함수를 호출합니다.
+  * 검색 버튼 클릭 또는 Enter 키 입력 시 performSearch 함수를 호출합니다.
 
-현재 페이지의 상대 경로인 /search 엔드포인트로 검색어를 포함하여 GET 요청을 보냅니다.
+  * 현재 페이지의 상대 경로인 /search 엔드포인트로 검색어를 포함하여 GET 요청을 보냅니다.
 
-백엔드로부터 받은 JSON 응답을 파싱하여 결과를 HTML 형식으로 동적으로 생성하고 페이지에 표시합니다.
+  * 백엔드로부터 받은 JSON 응답을 파싱하여 결과를 HTML 형식으로 동적으로 생성하고 페이지에 표시합니다.
 
-로딩 상태 및 오류 메시지를 표시하는 기능도 포함합니다.
+  * 로딩 상태 및 오류 메시지를 표시하는 기능도 포함합니다.
 
 ## 빌드 및 배포 방법
 
-(Cloud Shell 또는 gcloud 및 docker가 설치된 로컬 환경에서 진행)
+  * Cloud Shell 또는 gcloud 및 docker가 설치된 로컬 환경에서 진행합니다.
 
-프로젝트 폴더로 이동: cd 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
+  * 프로젝트 폴더로 이동: cd 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
 
 ### gcloud 설정: (필요시) 사용할 프로젝트와 리전을 설정합니다.
 ```bash
@@ -171,19 +171,19 @@ gcloud run deploy ${SERVICE_NAME} \
 
 --allow-unauthenticated: 데모 목적으로 인증 없이 누구나 웹 페이지에 접근할 수 있도록 허용합니다. 실제 프로덕션 환경에서는 필요에 따라 인증 설정을 강화해야 합니다.
 
-배포가 완료되면 **서비스 URL** 이 출력됩니다.
+  * 배포가 완료되면 **서비스 URL** 이 출력됩니다.
 
 ## 데모 테스트
 
-Cloud Run 배포 후 출력된 서비스 URL을 웹 브라우저 주소창에 입력하여 접속합니다.
+  * Cloud Run 배포 후 출력된 서비스 URL을 웹 브라우저 주소창에 입력하여 접속합니다.
 
-"Google Custom Search Demo (Cloud Run)" 제목과 함께 검색창이 나타납니다.
+  * "Google Custom Search Demo (Cloud Run)" 제목과 함께 검색창이 나타납니다.
 
-검색창에 원하는 검색어(예: "007")를 입력하고 "검색" 버튼을 클릭하거나 Enter 키를 누릅니다.
+  * 검색창에 원하는 검색어(예: "007")를 입력하고 "검색" 버튼을 클릭하거나 Enter 키를 누릅니다.
 
-"검색 중..." 메시지가 잠시 나타난 후, 검색 결과가 아래에 제목, 링크, 요약(snippet) 형태로 표시됩니다.
+  * "검색 중..." 메시지가 잠시 나타난 후, 검색 결과가 아래에 제목, 링크, 요약(snippet) 형태로 표시됩니다.
 
-만약 오류가 발생하면, 오류 메시지가 화면에 표시됩니다. (Cloud Run 로그나 브라우저 개발자 도구 콘솔에서 더 자세한 내용을 확인할 수 있습니다.)
+  * 만약 오류가 발생하면, 오류 메시지가 화면에 표시됩니다. (Cloud Run 로그나 브라우저 개발자 도구 콘솔에서 더 자세한 내용을 확인할 수 있습니다.)
 
-참고: Google Cloud 서비스 사용 시 비용이 발생할 수 있습니다. 특히 Custom Search API는 무료 할당량을 초과하면 요금이 부과됩니다. Cloud Run 또한 사용량에 따라 비용이 발생할 수 있습니다. 데모 사용 후 불필요한 리소스는 삭제하는 것이 좋습니다.
+  * 참고: Google Cloud 서비스 사용 시 비용이 발생할 수 있습니다. 특히 Custom Search API는 무료 할당량을 초과하면 요금이 부과됩니다. Cloud Run 또한 사용량에 따라 비용이 발생할 수 있습니다. 데모 사용 후 불필요한 리소스는 삭제하는 것이 좋습니다.
 
