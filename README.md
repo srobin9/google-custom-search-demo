@@ -65,6 +65,7 @@ export SERVICE_NAME="custom-search-demo"                        # Cloud Run 서�
 export IMAGE_NAME="${REGION}-docker.pkg.dev/${PROJECT_ID}/YOUR_REPO_NAME/${SERVICE_NAME}:v1" # Artifact Registry 이미지 경로
 export SERVICE_ACCOUNT_EMAIL="YOUR_SERVICE_ACCOUNT_EMAIL"       # 생성한 서비스 계정 이메일 주소
 export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search Engine 생성 후 얻은 ID
+```
 
 프로젝트 구조 및 파일 설명
 .
