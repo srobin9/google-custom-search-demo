@@ -1,4 +1,3 @@
-```markdown
 # Google Custom Search API 데모 (Cloud Run + 서비스 계정 인증)
 
 이 프로젝트는 Google Cloud Run에서 실행되는 Python Flask 백엔드를 사용하여 Google Custom Search JSON API를 호출하는 방법을 보여주는 웹 데모 애플리케이션입니다. 특히, API 키 대신 **서비스 계정(Service Account)**을 사용하여 Google Cloud 환경 내에서 안전하게 API를 인증하는 방법을 중점적으로 다룹니다.
@@ -74,94 +73,160 @@ export SERVICE_NAME="custom-search-demo"                        # Cloud Run 서�
 export IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}:v1"     # Container Registry 이미지 경로 (또는 Artifact Registry 경로)
 export SERVICE_ACCOUNT_EMAIL="YOUR_SERVICE_ACCOUNT_EMAIL"       # 생성한 서비스 계정 이메일 주소
 export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                  # Custom Search Engine 생성 후 얻은 ID
-```
 
-## 프로젝트 구조 및 파일 설명
-
-```
+프로젝트 구조 및 파일 설명
 .
 ├── app.py              # Flask 백엔드 애플리케이션 로직
 ├── Dockerfile          # 애플리케이션 컨테이너 이미지 빌드 정의
 ├── requirements.txt    # Python 의존성 라이브러리 목록
 └── templates/
     └── index.html      # 사용자 인터페이스 (HTML, CSS, JavaScript)
-```
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
 
-*   **`app.py`**:
-    *   Flask 애플리케이션 인스턴스를 생성합니다.
-    *   루트 경로(`/`) 요청 시 `templates/index.html` 파일을 렌더링하여 반환합니다.
-    *   `/search` 경로로 GET 요청이 오면, `q` 파라미터(검색어)를 받아옵니다.
-    *   `google-auth` 라이브러리를 사용하여 환경(Cloud Run)에서 자동으로 서비스 계정 자격 증명을 가져옵니다.
-    *   `google-api-python-client`를 사용하여 Custom Search API 클라이언트를 빌드합니다.
-    *   환경 변수로 설정된 `CSE_ID`와 검색어를 사용하여 Custom Search API를 호출합니다.
-    *   결과를 JSON 형식으로 가공하여 반환합니다.
-*   **`Dockerfile`**:
-    *   Python 3.9 슬림 이미지를 기반으로 합니다.
-    *   `requirements.txt`에 명시된 라이브러리들을 설치합니다.
-    *   애플리케이션 코드(현재 디렉토리의 모든 파일)를 이미지 안의 `/app` 디렉토리로 복사합니다.
-    *   `gunicorn` WSGI 서버를 사용하여 `app.py`의 Flask 앱을 실행합니다. (Cloud Run 환경에 적합)
-*   **`requirements.txt`**:
-    *   애플리케이션 실행에 필요한 Python 라이브러리 목록입니다 (Flask, google-api-python-client, google-auth, gunicorn, Flask-Cors).
-*   **`templates/index.html`**:
-    *   검색어 입력 필드, 검색 버튼, 결과 표시 영역을 포함하는 간단한 HTML 구조입니다.
-    *   기본적인 CSS 스타일링이 포함되어 있습니다.
-    *   JavaScript 코드가 포함되어 있습니다:
-        *   검색 버튼 클릭 또는 Enter 키 입력 시 `performSearch` 함수를 호출합니다.
-        *   현재 페이지의 상대 경로인 `/search` 엔드포인트로 검색어를 포함하여 GET 요청을 보냅니다.
-        *   백엔드로부터 받은 JSON 응답을 파싱하여 결과를 HTML 형식으로 동적으로 생성하고 페이지에 표시합니다.
-        *   로딩 상태 및 오류 메시지를 표시하는 기능도 포함합니다.
+app.py:
 
-## 빌드 및 배포 방법
+Flask 애플리케이션 인스턴스를 생성합니다.
 
-(Cloud Shell 또는 `gcloud` 및 `docker`가 설치된 로컬 환경에서 진행)
+루트 경로(/) 요청 시 templates/index.html 파일을 렌더링하여 반환합니다.
 
-1.  **프로젝트 폴더로 이동:** `cd` 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
-2.  **gcloud 설정:** (필요시) 사용할 프로젝트와 리전을 설정합니다.
-    ```bash
-    gcloud config set project ${PROJECT_ID}
-    gcloud config set run/region ${REGION}
-    ```
-3.  **Docker 이미지 빌드:**
-    ```bash
-    docker build -t ${IMAGE_NAME} .
-    ```
-4.  **Docker 인증 설정:** (Container Registry 또는 Artifact Registry에 푸시하기 위해 필요)
-    ```bash
-    # Artifact Registry 사용 시 (예: asia-northeast3 리전)
-    # gcloud auth configure-docker ${REGION}-docker.pkg.dev
-    # Container Registry 사용 시
-    gcloud auth configure-docker
-    ```
-5.  **Docker 이미지 푸시:**
-    ```bash
-    docker push ${IMAGE_NAME}
-    ```
-6.  **Cloud Run 서비스 배포:**
-    ```bash
-    gcloud run deploy ${SERVICE_NAME} \
-      --image ${IMAGE_NAME} \
-      --platform managed \
-      --service-account ${SERVICE_ACCOUNT_EMAIL} \
-      --set-env-vars "CSE_ID=${CUSTOM_SEARCH_ENGINE_ID}" \
-      --allow-unauthenticated \
-      --region ${REGION}
-    ```
-    *   `--image`: 방금 푸시한 Docker 이미지 경로.
-    *   `--platform managed`: 서버리스 환경 지정.
-    *   `--service-account`: **중요!** 사전 준비 단계에서 생성하고 권한을 부여한 서비스 계정 이메일. 이 계정의 권한으로 코드가 실행됩니다.
-    *   `--set-env-vars`: `CSE_ID` 값을 환경 변수로 컨테이너에 전달합니다. `app.py`에서 이 값을 읽습니다.
-    *   `--allow-unauthenticated`: **데모 목적**으로 인증 없이 누구나 웹 페이지에 접근할 수 있도록 허용합니다. 실제 프로덕션 환경에서는 필요에 따라 인증 설정을 강화해야 합니다.
-    *   배포가 완료되면 서비스 URL이 출력됩니다.
+/search 경로로 GET 요청이 오면, q 파라미터(검색어)를 받아옵니다.
 
-## 데모 테스트
+google-auth 라이브러리를 사용하여 환경(Cloud Run)에서 자동으로 서비스 계정 자격 증명을 가져옵니다.
 
-1.  Cloud Run 배포 후 출력된 **서비스 URL**을 웹 브라우저 주소창에 입력하여 접속합니다.
-2.  "Google Custom Search Demo (Cloud Run)" 제목과 함께 검색창이 나타납니다.
-3.  검색창에 원하는 검색어(예: "007")를 입력하고 "검색" 버튼을 클릭하거나 Enter 키를 누릅니다.
-4.  "검색 중..." 메시지가 잠시 나타난 후, 검색 결과가 아래에 제목, 링크, 요약(snippet) 형태로 표시됩니다.
-5.  만약 오류가 발생하면, 오류 메시지가 화면에 표시됩니다. (Cloud Run 로그나 브라우저 개발자 도구 콘솔에서 더 자세한 내용을 확인할 수 있습니다.)
+google-api-python-client를 사용하여 Custom Search API 클라이언트를 빌드합니다.
 
----
+환경 변수로 설정된 CSE_ID와 검색어를 사용하여 Custom Search API를 호출합니다.
 
-*참고: Google Cloud 서비스 사용 시 비용이 발생할 수 있습니다. 특히 Custom Search API는 무료 할당량을 초과하면 요금이 부과됩니다. Cloud Run 또한 사용량에 따라 비용이 발생할 수 있습니다. 데모 사용 후 불필요한 리소스는 삭제하는 것이 좋습니다.*
-```
+결과를 JSON 형식으로 가공하여 반환합니다.
+
+Dockerfile:
+
+Python 3.9 슬림 이미지를 기반으로 합니다.
+
+requirements.txt에 명시된 라이브러리들을 설치합니다.
+
+애플리케이션 코드(현재 디렉토리의 모든 파일)를 이미지 안의 /app 디렉토리로 복사합니다.
+
+gunicorn WSGI 서버를 사용하여 app.py의 Flask 앱을 실행합니다. (Cloud Run 환경에 적합)
+
+requirements.txt:
+
+애플리케이션 실행에 필요한 Python 라이브러리 목록입니다 (Flask, google-api-python-client, google-auth, gunicorn, Flask-Cors).
+
+templates/index.html:
+
+검색어 입력 필드, 검색 버튼, 결과 표시 영역을 포함하는 간단한 HTML 구조입니다.
+
+기본적인 CSS 스타일링이 포함되어 있습니다.
+
+JavaScript 코드가 포함되어 있습니다:
+
+검색 버튼 클릭 또는 Enter 키 입력 시 performSearch 함수를 호출합니다.
+
+현재 페이지의 상대 경로인 /search 엔드포인트로 검색어를 포함하여 GET 요청을 보냅니다.
+
+백엔드로부터 받은 JSON 응답을 파싱하여 결과를 HTML 형식으로 동적으로 생성하고 페이지에 표시합니다.
+
+로딩 상태 및 오류 메시지를 표시하는 기능도 포함합니다.
+
+빌드 및 배포 방법
+
+(Cloud Shell 또는 gcloud 및 docker가 설치된 로컬 환경에서 진행)
+
+프로젝트 폴더로 이동: cd 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
+
+gcloud 설정: (필요시) 사용할 프로젝트와 리전을 설정합니다.
+
+gcloud config set project ${PROJECT_ID}
+gcloud config set run/region ${REGION}
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+Docker 이미지 빌드:
+
+docker build -t ${IMAGE_NAME} .
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+Docker 인증 설정: (Container Registry 또는 Artifact Registry에 푸시하기 위해 필요)
+
+# Artifact Registry 사용 시 (예: asia-northeast3 리전)
+# gcloud auth configure-docker ${REGION}-docker.pkg.dev
+# Container Registry 사용 시
+gcloud auth configure-docker
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+Docker 이미지 푸시:
+
+docker push ${IMAGE_NAME}
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+Cloud Run 서비스 배포:
+
+gcloud run deploy ${SERVICE_NAME} \
+  --image ${IMAGE_NAME} \
+  --platform managed \
+  --service-account ${SERVICE_ACCOUNT_EMAIL} \
+  --set-env-vars "CSE_ID=${CUSTOM_SEARCH_ENGINE_ID}" \
+  --allow-unauthenticated \
+  --region ${REGION}
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+Bash
+IGNORE_WHEN_COPYING_END
+
+--image: 방금 푸시한 Docker 이미지 경로.
+
+--platform managed: 서버리스 환경 지정.
+
+--service-account: 중요! 사전 준비 단계에서 생성하고 권한을 부여한 서비스 계정 이메일. 이 계정의 권한으로 코드가 실행됩니다.
+
+--set-env-vars: CSE_ID 값을 환경 변수로 컨테이너에 전달합니다. app.py에서 이 값을 읽습니다.
+
+--allow-unauthenticated: 데모 목적으로 인증 없이 누구나 웹 페이지에 접근할 수 있도록 허용합니다. 실제 프로덕션 환경에서는 필요에 따라 인증 설정을 강화해야 합니다.
+
+배포가 완료되면 서비스 URL이 출력됩니다.
+
+데모 테스트
+
+Cloud Run 배포 후 출력된 서비스 URL을 웹 브라우저 주소창에 입력하여 접속합니다.
+
+"Google Custom Search Demo (Cloud Run)" 제목과 함께 검색창이 나타납니다.
+
+검색창에 원하는 검색어(예: "007")를 입력하고 "검색" 버튼을 클릭하거나 Enter 키를 누릅니다.
+
+"검색 중..." 메시지가 잠시 나타난 후, 검색 결과가 아래에 제목, 링크, 요약(snippet) 형태로 표시됩니다.
+
+만약 오류가 발생하면, 오류 메시지가 화면에 표시됩니다. (Cloud Run 로그나 브라우저 개발자 도구 콘솔에서 더 자세한 내용을 확인할 수 있습니다.)
+
+참고: Google Cloud 서비스 사용 시 비용이 발생할 수 있습니다. 특히 Custom Search API는 무료 할당량을 초과하면 요금이 부과됩니다. Cloud Run 또한 사용량에 따라 비용이 발생할 수 있습니다. 데모 사용 후 불필요한 리소스는 삭제하는 것이 좋습니다.
+
+IGNORE_WHEN_COPYING_START
+content_copy
+download
+Use code with caution.
+IGNORE_WHEN_COPYING_END
