@@ -137,12 +137,6 @@ gcloud config set run/region ${REGION}
 ### Docker 이미지 빌드:
 ```bash
 docker build -t ${IMAGE_NAME} .
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
 ```
 
 ### Docker 인증 설정: (Container Registry 또는 Artifact Registry에 푸시하기 위해 필요)
