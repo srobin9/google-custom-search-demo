@@ -78,19 +78,19 @@ export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search 
 ```
 ### app.py: 
 
-Flask 애플리케이션 인스턴스를 생성합니다.
+  * Flask 애플리케이션 인스턴스를 생성합니다.
 
-루트 경로(/) 요청 시 templates/index.html 파일을 렌더링하여 반환합니다.
+  * 루트 경로(/) 요청 시 templates/index.html 파일을 렌더링하여 반환합니다.
 
-/search 경로로 GET 요청이 오면, q 파라미터(검색어)를 받아옵니다.
+  * /search 경로로 GET 요청이 오면, q 파라미터(검색어)를 받아옵니다.
 
-google-auth 라이브러리를 사용하여 환경(Cloud Run)에서 자동으로 서비스 계정 자격 증명을 가져옵니다.
+  * google-auth 라이브러리를 사용하여 환경(Cloud Run)에서 자동으로 서비스 계정 자격 증명을 가져옵니다.
 
-google-api-python-client를 사용하여 Custom Search API 클라이언트를 빌드합니다.
+  * google-api-python-client를 사용하여 Custom Search API 클라이언트를 빌드합니다.
 
-환경 변수로 설정된 CSE_ID와 검색어를 사용하여 Custom Search API를 호출합니다.
+  * 환경 변수로 설정된 CSE_ID와 검색어를 사용하여 Custom Search API를 호출합니다.
 
-결과를 JSON 형식으로 가공하여 반환합니다.
+  * 결과를 JSON 형식으로 가공하여 반환합니다.
 
 ### Dockerfile: 
 
