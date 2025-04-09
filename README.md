@@ -41,7 +41,7 @@ Google API 인증에는 여러 방법이 있지만, 이 프로젝트에서는 �
 2.  **API 활성화:** Google Cloud Console에서 다음 API를 활성화해야 합니다:
     *   Custom Search API
     *   Cloud Run API
-    *   Artifact Registry API (또는 Container Registry API)
+    *   Artifact Registry API
     *   IAM Service Account Credentials API (서비스 계정이 다른 API와 상호작용하기 위해 내부적으로 필요할 수 있음)
 3.  **서비스 계정(Service Account) 생성:**
     *   IAM 및 관리자 > 서비스 계정 메뉴에서 새 서비스 계정을 생성합니다. (예: `custom-search-runner`)
@@ -62,10 +62,9 @@ Cloud Shell 또는 로컬 터미널에서 빌드 및 배포를 진행하기 전�
 export PROJECT_ID="YOUR_PROJECT_ID"                             # 본인의 Google Cloud 프로젝트 ID
 export REGION="asia-northeast3"                                 # 배포할 리전 (예: 서울)
 export SERVICE_NAME="custom-search-demo"                        # Cloud Run 서비스 이름
-# Artifact Registry 사용 시: export IMAGE_NAME="${REGION}-docker.pkg.dev/${PROJECT_ID}/YOUR_REPO_NAME/${SERVICE_NAME}:v1"
-export IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}:v1"     # Container Registry 이미지 경로 (또는 Artifact Registry 경로)
+export IMAGE_NAME="${REGION}-docker.pkg.dev/${PROJECT_ID}/YOUR_REPO_NAME/${SERVICE_NAME}:v1" # Artifact Registry 이미지 경로
 export SERVICE_ACCOUNT_EMAIL="YOUR_SERVICE_ACCOUNT_EMAIL"       # 생성한 서비스 계정 이메일 주소
-export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                  # Custom Search Engine 생성 후 얻은 ID
+export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search Engine 생성 후 얻은 ID
 
 프로젝트 구조 및 파일 설명
 .
