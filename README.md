@@ -1,6 +1,6 @@
 # Google Custom Search API 데모 (Cloud Run + 서비스 계정 인증)
 
-이 프로젝트는 Google Cloud Run에서 실행되는 Python Flask 백엔드를 사용하여 Google Custom Search JSON API를 호출하는 방법을 보여주는 웹 데모 애플리케이션입니다. 특히, API 키 대신 **서비스 계정(Service Account)**을 사용하여 Google Cloud 환경 내에서 안전하게 API를 인증하는 방법을 중점적으로 다룹니다.
+이 프로젝트는 Google Cloud Run에서 실행되는 Python Flask 백엔드를 사용하여 Google Custom Search JSON API를 호출하는 방법을 보여주는 웹 데모 애플리케이션입니다. 특히, API 키 대신 __서비스 계정(Service Account)__을 사용하여 Google Cloud 환경 내에서 안전하게 API를 인증하는 방법을 중점적으로 다룹니다.
 
 사용자는 웹 페이지의 검색창에 검색어를 입력하고, 백엔드는 이 요청을 받아 서비스 계정의 권한으로 Custom Search API를 호출한 후, 그 결과를 다시 웹 페이지에 표시합니다.
 
