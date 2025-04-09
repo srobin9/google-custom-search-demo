@@ -68,16 +68,14 @@ export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search 
 ```
 
 ##  프로젝트 구조 및 파일 설명
-```bash
 .
 ├── app.py              # Flask 백엔드 애플리케이션 로직
 ├── Dockerfile          # 애플리케이션 컨테이너 이미지 빌드 정의
 ├── requirements.txt    # Python 의존성 라이브러리 목록
 └── templates/
     └── index.html      # 사용자 인터페이스 (HTML, CSS, JavaScript)
-```
 
-app.py:
+# app.py: 
 
 Flask 애플리케이션 인스턴스를 생성합니다.
 
@@ -93,7 +91,7 @@ google-api-python-client를 사용하여 Custom Search API 클라이언트를 �
 
 결과를 JSON 형식으로 가공하여 반환합니다.
 
-Dockerfile:
+# Dockerfile: 
 
 Python 3.9 슬림 이미지를 기반으로 합니다.
 
@@ -103,11 +101,11 @@ requirements.txt에 명시된 라이브러리들을 설치합니다.
 
 gunicorn WSGI 서버를 사용하여 app.py의 Flask 앱을 실행합니다. (Cloud Run 환경에 적합)
 
-requirements.txt:
+# requirements.txt: 
 
 애플리케이션 실행에 필요한 Python 라이브러리 목록입니다 (Flask, google-api-python-client, google-auth, gunicorn, Flask-Cors).
 
-templates/index.html:
+# templates/index.html: 
 
 검색어 입력 필드, 검색 버튼, 결과 표시 영역을 포함하는 간단한 HTML 구조입니다.
 
@@ -123,14 +121,14 @@ JavaScript 코드가 포함되어 있습니다:
 
 로딩 상태 및 오류 메시지를 표시하는 기능도 포함합니다.
 
-빌드 및 배포 방법
+## 빌드 및 배포 방법
 
 (Cloud Shell 또는 gcloud 및 docker가 설치된 로컬 환경에서 진행)
 
-프로젝트 폴더로 이동: cd 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
+# 프로젝트 폴더로 이동: cd 명령어를 사용하여 이 README 파일이 있는 프로젝트의 루트 폴더로 이동합니다.
 
-gcloud 설정: (필요시) 사용할 프로젝트와 리전을 설정합니다.
-
+# gcloud 설정: (필요시) 사용할 프로젝트와 리전을 설정합니다.
+```bash
 gcloud config set project ${PROJECT_ID}
 gcloud config set run/region ${REGION}
 IGNORE_WHEN_COPYING_START
@@ -139,9 +137,10 @@ download
 Use code with caution.
 Bash
 IGNORE_WHEN_COPYING_END
+```
 
-Docker 이미지 빌드:
-
+# Docker 이미지 빌드:
+```bash
 docker build -t ${IMAGE_NAME} .
 IGNORE_WHEN_COPYING_START
 content_copy
@@ -149,32 +148,21 @@ download
 Use code with caution.
 Bash
 IGNORE_WHEN_COPYING_END
+```
 
-Docker 인증 설정: (Container Registry 또는 Artifact Registry에 푸시하기 위해 필요)
-
+# Docker 인증 설정: (Container Registry 또는 Artifact Registry에 푸시하기 위해 필요)
+```bash
 # Artifact Registry 사용 시 (예: asia-northeast3 리전)
-# gcloud auth configure-docker ${REGION}-docker.pkg.dev
-# Container Registry 사용 시
-gcloud auth configure-docker
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+gcloud auth configure-docker ${REGION}-docker.pkg.dev
+```
 
-Docker 이미지 푸시:
-
+# Docker 이미지 푸시:
+```bash
 docker push ${IMAGE_NAME}
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
-Cloud Run 서비스 배포:
-
+# Cloud Run 서비스 배포:
+```bash
 gcloud run deploy ${SERVICE_NAME} \
   --image ${IMAGE_NAME} \
   --platform managed \
@@ -182,12 +170,7 @@ gcloud run deploy ${SERVICE_NAME} \
   --set-env-vars "CSE_ID=${CUSTOM_SEARCH_ENGINE_ID}" \
   --allow-unauthenticated \
   --region ${REGION}
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
 --image: 방금 푸시한 Docker 이미지 경로.
 
@@ -201,7 +184,7 @@ IGNORE_WHEN_COPYING_END
 
 배포가 완료되면 서비스 URL이 출력됩니다.
 
-데모 테스트
+## 데모 테스트
 
 Cloud Run 배포 후 출력된 서비스 URL을 웹 브라우저 주소창에 입력하여 접속합니다.
 
@@ -215,8 +198,3 @@ Cloud Run 배포 후 출력된 서비스 URL을 웹 브라우저 주소창에 �
 
 참고: Google Cloud 서비스 사용 시 비용이 발생할 수 있습니다. 특히 Custom Search API는 무료 할당량을 초과하면 요금이 부과됩니다. Cloud Run 또한 사용량에 따라 비용이 발생할 수 있습니다. 데모 사용 후 불필요한 리소스는 삭제하는 것이 좋습니다.
 
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
