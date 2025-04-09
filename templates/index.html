@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Search Demo (Cloud Run)</title>
+    <style>
+        /* CSS 스타일은 이전과 동일 */
+        body { font-family: sans-serif; }
+        #results div { margin-bottom: 15px; padding: 10px; border: 1px solid #eee; }
+        #results h3 { margin: 0 0 5px 0; }
+        #results a { color: #1a0dab; text-decoration: none; }
+        #results a:hover { text-decoration: underline; }
+        #results p { margin: 0; color: #4d5156; }
+        input[type="text"] { padding: 8px; width: 300px; }
+        button { padding: 8px 15px; }
+        #error { color: red; margin-top: 10px;}
+    </style>
+</head>
+<body>
+
+    <h1>Google Custom Search Demo (Cloud Run)</h1>
+
+    <input type="text" id="searchInput" placeholder="검색어 입력 (예: 007)">
+    <button id="searchButton">검색</button>
+
+    <div id="loading" style="display: none;">검색 중...</div>
+    <div id="error"></div>
+    <div id="results">
+        <!-- 검색 결과가 여기에 표시됩니다 -->
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsDiv = document.getElementById('results');
+        const errorDiv = document.getElementById('error');
+        const loadingDiv = document.getElementById('loading');
+
+        // 백엔드 URL 변수 제거
+
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        async function performSearch() {
+            const query = searchInput.value.trim();
+            if (!query) {
+                alert('검색어를 입력하세요.');
+                return;
+            }
+
+            // 이전 결과 및 오류 메시지 지우기
+            resultsDiv.innerHTML = '';
+            errorDiv.textContent = '';
+            loadingDiv.style.display = 'block';
+
+            try {
+                // 백엔드 API 호출 경로를 상대 경로 '/search'로 변경
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+
+                loadingDiv.style.display = 'none';
+
+                if (!response.ok) {
+                    let errorMsg = `오류 발생: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMsg += ` - ${errorData.error || response.statusText}`;
+                    } catch (e) {
+                         errorMsg += ` - ${response.statusText}`;
+                    }
+                     throw new Error(errorMsg);
+                }
+
+                const results = await response.json();
+
+                 if (results.error) {
+                     throw new Error(results.error);
+                 }
+
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<p>검색 결과가 없습니다.</p>';
+                    return;
+                }
+
+                results.forEach(item => {
+                    const resultElement = document.createElement('div');
+                    resultElement.innerHTML = `
+                        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                        <a href="${item.link}" target="_blank">${item.link}</a>
+                        <p>${item.snippet}</p>
+                    `;
+                    resultsDiv.appendChild(resultElement);
+                });
+
+            } catch (error) {
+                console.error('검색 중 오류 발생:', error);
+                loadingDiv.style.display = 'none';
+                errorDiv.textContent = `검색 실패: ${error.message}`;
+            }
+        }
+    </script>
+
+</body>
+</html>

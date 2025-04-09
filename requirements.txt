@@ -1,0 +1,5 @@
+Flask>=2.0
+google-api-python-client>=2.0
+google-auth>=2.0
+Flask-Cors>=3.0 # 브라우저에서 API 호출 시 CORS 이슈 방지
+gunicorn        # Cloud Run에서 사용할 프로덕션 WSGI 서버
