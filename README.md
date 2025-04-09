@@ -46,8 +46,8 @@ Google API 인증에는 여러 방법이 있지만, 이 프로젝트에서는 �
 3.  **서비스 계정(Service Account) 생성:**
     *   IAM 및 관리자 > 서비스 계정 메뉴에서 새 서비스 계정을 생성합니다. (예: `custom-search-runner`)
     *   **별도의 키(JSON) 파일 다운로드는 필요 없습니다.** Cloud Run에 직접 연결할 것입니다.
-4.  **서비스 계정에 역할 부여:** 생성한 서비스 계정에 Custom Search API를 사용할 권한을 부여해야 합니다. IAM 페이지에서 서비스 계정을 선택하고 다음 역할 중 하나를 추가합니다:
-    *   `서비스 사용량 소비자 (roles/serviceusage.serviceUsageConsumer)`: 가장 간단하며 여러 Google API 사용 권한을 포함합니다.
+4.  **서비스 계정에 역할 부여:** 생성한 서비스 계정에 Custom Search API를 사용할 권한을 부여해야 합니다. IAM 페이지에서 서비스 계정을 선택하고 다음 역할을 추가합니다:
+    *   `Service Usage Customer (roles/serviceusage.serviceUsageConsumer)`: 가장 간단하며 여러 Google API 사용 권한을 포함합니다.
     *   (더 세분화된 제어를 원할 경우 Custom Role 생성 가능)
 5.  **Custom Search Engine (CSE) 생성:**
     *   [Programmable Search Engine](https://programmablesearchengine.google.com/controlpanel/all) 페이지에서 새 검색 엔진을 만듭니다.
