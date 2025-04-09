@@ -54,7 +54,7 @@ Google API 인증에는 여러 방법이 있지만, 이 프로젝트에서는 �
     *   검색할 사이트(예: 전체 웹 또는 특정 사이트)를 지정합니다.
     *   생성된 **검색 엔진 ID (CSE ID)** 를 복사해 둡니다. 이 ID는 이후 환경 변수로 사용됩니다.
 
-## 환경 변수 설정
+##  환경 변수 설정
 
 Cloud Shell 또는 로컬 터미널에서 빌드 및 배포를 진행하기 전에 다음 환경 변수를 설정해야 합니다. 실제 값으로 변경해 주세요.
 
@@ -67,18 +67,15 @@ export SERVICE_ACCOUNT_EMAIL="YOUR_SERVICE_ACCOUNT_EMAIL"       # 생성한 서�
 export CUSTOM_SEARCH_ENGINE_ID="YOUR_CSE_ID"                    # Custom Search Engine 생성 후 얻은 ID
 ```
 
-프로젝트 구조 및 파일 설명
+##  프로젝트 구조 및 파일 설명
+```bash
 .
 ├── app.py              # Flask 백엔드 애플리케이션 로직
 ├── Dockerfile          # 애플리케이션 컨테이너 이미지 빌드 정의
 ├── requirements.txt    # Python 의존성 라이브러리 목록
 └── templates/
     └── index.html      # 사용자 인터페이스 (HTML, CSS, JavaScript)
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
+```
 
 app.py:
 
